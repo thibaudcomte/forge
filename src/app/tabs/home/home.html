@@ -1,0 +1,57 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>FORGE</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <h1>
+    Welcome back,
+    <ion-text color="primary">
+      <strong>Thibaud</strong>
+    </ion-text>
+  </h1>
+  <p>{{ message() }}</p>
+
+  @let program = todaysProgram();
+  <ion-card color="secondary">
+    <ion-card-header>
+      <ion-card-title class="ion-display-flex ion-align-baseline">
+        <ion-icon name="calendar-clear-outline"></ion-icon>
+        <span class="ion-margin-start">Today's Session</span>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <h1>{{ program ? `${program.name}: ${program.label}` : 'Loading...' }}</h1>
+      @if (program) {
+        <p>{{ program.exercises }} Exercises &bull; Est. 55 minutes</p>
+      }
+      <ion-button class="ion-padding" expand="block" [disabled]="!program" (click)="startWorkout()">
+        <ion-icon slot="start" name="play-circle-outline"></ion-icon>
+        Start Workout
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title class="ion-display-flex ion-align-baseline">
+        <ion-icon name="scale-outline"></ion-icon>
+        <span class="ion-margin-start">Body Weight</span>
+      </ion-card-title>
+      <ion-card-subtitle>Last Logged: 2 days ago</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content class="ion-display-flex ion-align-items-stretch gap">
+      <div class="ion-display-flex gap">
+        <ion-input class="ion-flex-1" type="number" fill="outline" placeholder="Weight : 68" #weight></ion-input>
+        <ion-input class="ion-flex-1" type="number" fill="outline" placeholder="Fat : 14%" #fat></ion-input>
+      </div>
+      <ion-button
+        class="ion-flex-1 ion-no-margin"
+        (click)="addWeight(+weight.value!, fat.value ? +fat.value : undefined)"
+      >
+        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -1,0 +1,19 @@
+:host {
+  display: block;
+}
+
+.last-session {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 1ch;
+  border: 1px solid var(--ion-card-border-color);
+  border-radius: 5px;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #1d1a23;
+}
+
+ion-button > div {
+  width: 100%;
+}

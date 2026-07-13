@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Training</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="ion-padding-top">
+    @for (program of programs(); track $index) {
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{ program.name }}</ion-card-title>
+          <ion-card-subtitle>{{ program.label }}</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content class="ion-display-flex ion-justify-content-between ion-align-items-center gap">
+          <div>
+            <div>{{ program.exercises }} exercises</div>
+            <ion-text [color]="program.isNextScheduled ? 'secondary' : 'medium'" [class.bold]="program.isNextScheduled">
+              <ion-icon name="calendar-outline"></ion-icon>
+              {{ program.lastPerformedAt ? (program.lastPerformedAt | date: 'dd MMM') : 'Never done' }}
+            </ion-text>
+          </div>
+          <ion-button [class.btn-gradient]="program.isNextScheduled" (click)="startWorkout(program.id)"
+            >Start Workout</ion-button
+          >
+        </ion-card-content>
+      </ion-card>
+    }
+  </div>
+</ion-content>

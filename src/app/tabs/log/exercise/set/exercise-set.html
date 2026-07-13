@@ -1,0 +1,33 @@
+<div class="flex ion-margin-bottom">
+  <div class="column first-column">
+    @if (hasHeader()) {
+      <div>Set</div>
+    }
+    <div id="set-number">{{ set().position + 1 }}</div>
+  </div>
+  <div class="column">
+    @if (hasHeader()) {
+      <div>Reps</div>
+    }
+    <ion-input
+      type="number"
+      fill="outline"
+      [disabled]="disabled()"
+      [value]="set().reps"
+      (ionInput)="onRepsInput($event)"
+    >
+    </ion-input>
+  </div>
+  <div class="column">
+    @if (hasHeader()) {
+      <div>Weight (kg)</div>
+    }
+    <ion-input
+      type="number"
+      fill="outline"
+      [disabled]="disabled()"
+      [value]="set().weight"
+      (ionInput)="onWeightInput($event)"
+    ></ion-input>
+  </div>
+</div>

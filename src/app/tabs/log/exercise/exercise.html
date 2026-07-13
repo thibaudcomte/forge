@@ -1,0 +1,48 @@
+@let exo = exercise();
+@if (exo) {
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>{{ exo?.name }}</ion-card-title>
+      <ion-card-subtitle color="secondary"
+        >{{ exo.sets.length }} sets of {{ exo.repsRange ?? 12 }} reps</ion-card-subtitle
+      >
+    </ion-card-header>
+    <ion-card-content>
+      <div class="last-session">
+        <ion-icon name="time-outline" color="secondary"></ion-icon>
+        <ion-text color="medium">Best Session:</ion-text>
+        @if (exo.bestSet) {
+          <ion-text color="white">{{ exo.bestSet.reps }} reps &bull; {{ exo.bestSet.weight }} kg</ion-text>
+        } @else {
+          <ion-text color="white">No previous sets</ion-text>
+        }
+      </div>
+      @for (set of exo.sets; track $index) {
+        <exercise-set
+          [hasHeader]="$index == 0"
+          [disabled]="$index !== currentSetIndex()"
+          [set]="exo.sets[$index]"
+          class="ion-margin-vertical"
+        ></exercise-set>
+        @if ($index === currentSetIndex()) {
+          <ion-button
+            expand="block"
+            fill="outline"
+            color="secondary"
+            class="btn-large-radius ion-padding-vertical"
+            [disabled]="!canStartRestTimer()"
+            (click)="startRestTimer()"
+          >
+            <div class="ion-display-flex ion-align-items-center ion-justify-content-between bold">
+              <ion-text>Start Rest</ion-text>
+              <div class="ion-display-flex ion-align-items-center">
+                <ion-icon name="stopwatch-outline"></ion-icon>
+                <ion-text class="ion-margin-start">{{ exo.restTimeSeconds | seconds }}</ion-text>
+              </div>
+            </div>
+          </ion-button>
+        }
+      }
+    </ion-card-content>
+  </ion-card>
+}

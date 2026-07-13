@@ -1,0 +1,98 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Trends</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="ion-display-flex ion-justify-content-between ion-align-items-center">
+    <span class="ion-flex-1">Your progress over the last {{ selectedRange() }} days.</span>
+    <div class="ion-display-flex ion-flex-nowrap ion-align-items-center">
+      <ion-button
+        shape="round"
+        [fill]="selectedRange() === 30 ? 'solid' : 'outline'"
+        size="small"
+        color="secondary"
+        (click)="selectRange(30)"
+      >
+        30D
+      </ion-button>
+      <ion-button
+        shape="round"
+        [fill]="selectedRange() === 90 ? 'solid' : 'outline'"
+        size="small"
+        color="secondary"
+        (click)="selectRange(90)"
+      >
+        90D
+      </ion-button>
+    </div>
+  </div>
+
+  <ion-card>
+    <ion-card-content class="ion-display-flex">
+      <div class="ion-flex-1">
+        <p class="ion-text-uppercase">Weight Change</p>
+        <ion-text color="secondary">
+          <span class="text-big">-2.5</span>
+          <span>kg</span>
+        </ion-text>
+      </div>
+      <div class="ion-flex-1">
+        <p class="ion-text-uppercase">Muscle Gained</p>
+        <ion-text color="primary">
+          <span class="text-big">+2.1</span>
+          <span>kg</span>
+        </ion-text>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title> Body Weight Trend </ion-card-title>
+      <ion-card-subtitle>Last logged: 2 days ago</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <p>Track your weight changes over time.</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Current Body Fat %</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-text color="primary" class="text-big">14.2%</ion-text>
+      <ion-badge color="success" class="ion-margin-start ion-display-inline-flex ion-align-content-baseline">
+        <ion-icon name="checkmark-circle-outline"></ion-icon>
+        Standard
+      </ion-badge>
+      <div class="ion-display-flex ion-justify-content-between">
+        <span>vs Last Month</span>
+        <ion-text color="warning" class="ion-display-flex ion-align-items-baseline">
+          <ion-icon name="arrow-up-outline"></ion-icon>
+          &nbsp;
+          <span>1.2%</span>
+        </ion-text>
+      </div>
+      <ion-progress-bar class="ion-margin-vertical" value="0.14" color="secondary"></ion-progress-bar>
+      <ion-text color="neutral">
+        <p>Target: 12.0%</p>
+      </ion-text>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Current BMI</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <span class="text-big">23.8</span>
+      <ion-badge color="warning" class="ion-margin-start ion-display-inline-flex ion-align-content-baseline">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        High
+      </ion-badge>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
