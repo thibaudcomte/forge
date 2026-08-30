@@ -16,7 +16,7 @@ import type { OverlayEventDetail } from '@ionic/core';
 import { addIcons } from 'ionicons';
 import { arrowForwardOutline, checkmarkCircleOutline, listCircleOutline } from 'ionicons/icons';
 import { from, switchMap } from 'rxjs';
-import { SupabaseService } from '../../services/supabase/supabase.service';
+import { SupabaseService } from '../../services/supabase/service';
 import { LogState } from '../../state/log-state';
 import { ExerciseComponent } from './exercise/exercise';
 

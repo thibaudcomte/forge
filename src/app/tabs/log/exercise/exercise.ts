@@ -11,7 +11,7 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { stopwatchOutline, timeOutline } from 'ionicons/icons';
-import { SecondsPipe } from '../../../seconds-pipe';
+import { SecondsPipe } from '../../../pipes/seconds-pipe';
 import { WorkoutExercise } from '../log';
 import { ExerciseSetComponent } from './set/exercise-set';
 

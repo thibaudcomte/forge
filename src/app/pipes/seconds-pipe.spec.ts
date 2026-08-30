@@ -1,5 +1,3 @@
-import { SecondsPipe } from './seconds-pipe';
-
 describe('SecondsPipe', () => {
   it.each([
     [60, '1:00'],

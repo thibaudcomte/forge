@@ -1,7 +1,5 @@
 import { Service } from '@angular/core';
-import { createClient } from '@supabase/supabase-js';
-import { environment } from '../../../environments/environment';
-import { Database } from './database.types';
+import { supabase } from './client';
 
 export interface ProgramLight {
   id: number;
@@ -39,24 +37,8 @@ export interface WorkoutExercise {
 
 @Service()
 export class SupabaseService {
-  private readonly supabase = createClient<Database>(environment.supabase.url, environment.supabase.key);
-
-  async signInWithEmail() {
-    const { data, error } = await this.supabase.auth.signInWithPassword({
-      email: environment.user.email,
-      password: environment.user.password,
-    });
-
-    if (error) {
-      console.error('Error signing in', error);
-      throw new Error(error.message);
-    }
-
-    return data.user.email;
-  }
-
   async getProgramsLight() {
-    const { data, error } = await this.supabase
+    const { data, error } = await supabase
       .from('programs')
       .select(
         `
@@ -88,7 +70,7 @@ export class SupabaseService {
   }
 
   async createProgramWorkout(programId: number) {
-    const { data, error } = await this.supabase
+    const { data, error } = await supabase
       .from('programs')
       .select(
         `
@@ -166,12 +148,6 @@ export class SupabaseService {
     } satisfies Workout;
   }
 
-  async recordWeight(date: Date, weight: number, bodyFat?: number) {
-    await this.supabase
-      .from('weight_entries')
-      .insert({ recorded_at: date.toDateString(), weight_kg: weight, body_fat_pct: bodyFat });
-  }
-
   async saveWorkout(
     programId: number,
     exercises: {
@@ -179,7 +155,7 @@ export class SupabaseService {
       sets: { position: number; reps: number; weight: number }[];
     }[],
   ) {
-    const { data: workout, error: workoutError } = await this.supabase
+    const { data: workout, error: workoutError } = await supabase
       .from('workouts')
       .insert({ program_id: programId, performed_at: new Date().toISOString() })
       .select('id')
@@ -190,7 +166,7 @@ export class SupabaseService {
       throw new Error(workoutError.message);
     }
 
-    const { data: workoutExercises, error: exercisesError } = await this.supabase
+    const { data: workoutExercises, error: exercisesError } = await supabase
       .from('workout_exercises')
       .insert(
         exercises.map((exercise, position) => ({
@@ -217,7 +193,7 @@ export class SupabaseService {
 
     if (sets.length === 0) return workout.id;
 
-    const { error: setsError } = await this.supabase.from('exercise_sets').insert(sets);
+    const { error: setsError } = await supabase.from('exercise_sets').insert(sets);
     if (setsError) {
       console.error('Error saving exercise sets:', setsError);
       throw new Error(setsError.message);

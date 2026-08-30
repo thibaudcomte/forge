@@ -6,5 +6,6 @@ export const environment = {
   user: {
     email: 'thibaud.comte@outlook.com',
     password: '',
+    height: 172,
   },
 };

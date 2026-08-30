@@ -29,17 +29,19 @@
     </div>
   </div>
 
+  @let latestWeight = latestWeightEntry();
+
   <ion-card>
     <ion-card-content class="ion-display-flex">
-      <div class="ion-flex-1">
-        <p class="ion-text-uppercase">Weight Change</p>
+      <div class="ion-flex-1 ion-display-flex ion-flex-column">
+        <ion-text class="ion-text-uppercase">Weight Change</ion-text>
         <ion-text color="secondary">
-          <span class="text-big">-2.5</span>
+          <span class="text-big">{{ weightDifference() }}</span>
           <span>kg</span>
         </ion-text>
       </div>
-      <div class="ion-flex-1">
-        <p class="ion-text-uppercase">Muscle Gained</p>
+      <div class="ion-flex-1 ion-display-flex ion-flex-column">
+        <ion-text class="ion-text-uppercase">Muscle Gained</ion-text>
         <ion-text color="primary">
           <span class="text-big">+2.1</span>
           <span>kg</span>
@@ -50,11 +52,15 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title> Body Weight Trend </ion-card-title>
-      <ion-card-subtitle>Last logged: 2 days ago</ion-card-subtitle>
+      <ion-card-title>Body Weight Trend</ion-card-title>
+      <ion-card-subtitle>{{ weightSummary() }}</ion-card-subtitle>
     </ion-card-header>
-    <ion-card-content>
-      <p>Track your weight changes over time.</p>
+    <ion-card-content class="ion-display-flex gap">
+      <ion-text color="secondary"> {{ latestWeight?.weightKg?.toFixed(1) }} kg</ion-text>
+      @if (latestWeight) {
+        &bull;
+        <ion-text>{{ latestWeightEntry()?.bodyFatPercentage }}% body fat</ion-text>
+      }
     </ion-card-content>
   </ion-card>
 
@@ -63,7 +69,7 @@
       <ion-card-title>Current Body Fat %</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-text color="primary" class="text-big">14.2%</ion-text>
+      <ion-text color="primary" class="text-big">{{ latestWeight?.bodyFatPercentage }}%</ion-text>
       <ion-badge color="success" class="ion-margin-start ion-display-inline-flex ion-align-content-baseline">
         <ion-icon name="checkmark-circle-outline"></ion-icon>
         Standard
@@ -77,9 +83,7 @@
         </ion-text>
       </div>
       <ion-progress-bar class="ion-margin-vertical" value="0.14" color="secondary"></ion-progress-bar>
-      <ion-text color="neutral">
-        <p>Target: 12.0%</p>
-      </ion-text>
+      <ion-text color="neutral">Target: 12%</ion-text>
     </ion-card-content>
   </ion-card>
 
@@ -88,10 +92,13 @@
       <ion-card-title>Current BMI</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <span class="text-big">23.8</span>
-      <ion-badge color="warning" class="ion-margin-start ion-display-inline-flex ion-align-content-baseline">
-        <ion-icon name="alert-circle-outline"></ion-icon>
-        High
+      <span class="text-big">{{ bmi().value.toFixed(1) }}</span>
+      <ion-badge
+        [color]="bmi().status === 'Normal' ? 'success' : 'warning'"
+        class="ion-margin-start ion-display-inline-flex ion-align-content-baseline"
+      >
+        <ion-icon [name]="bmi().status === 'Normal' ? 'checkmark-circle-outline' : 'alert-circle-outline'"></ion-icon>
+        {{ bmi().status }}
       </ion-badge>
     </ion-card-content>
   </ion-card>

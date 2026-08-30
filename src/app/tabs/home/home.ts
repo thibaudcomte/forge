@@ -17,7 +17,8 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { addCircleOutline, calendarClearOutline, playCircleOutline, scaleOutline } from 'ionicons/icons';
-import { SupabaseService } from '../../services/supabase/supabase.service';
+import { SupabaseService } from '../../services/supabase/service';
+import { WeightService } from '../../services/supabase/weight.service';
 import { LogState } from '../../state/log-state';
 
 interface Program {
@@ -52,6 +53,7 @@ export class HomePage implements OnInit {
   }
 
   private readonly supabase = inject(SupabaseService);
+  private readonly weightService = inject(WeightService);
   private readonly state = inject(LogState);
   private readonly router = inject(Router);
 
@@ -82,6 +84,6 @@ export class HomePage implements OnInit {
   async addWeight(weight: number, bodyFat?: number) {
     if (weight <= 0) return;
     if (!!bodyFat && bodyFat <= 0) return;
-    await this.supabase.recordWeight(new Date(), weight, bodyFat);
+    await this.weightService.recordWeight(new Date(), weight, bodyFat);
   }
 }
