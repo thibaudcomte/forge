@@ -97,9 +97,7 @@ export class HomePage implements OnInit {
 
   latestWeightPlaceholder = computed(() => `Weight : ${this.latestBodyWeightReading()?.weightKg} kg`);
   latestFatPlaceholder = computed(() => `Fat : ${this.latestBodyWeightReading()?.bodyFatPercentage ?? '-'} %`);
-  latestMusclePlaceholder = computed(
-    () => `Muscle Mass : ${this.latestBodyWeightReading()?.muscleMassPercentage ?? '-'} %`,
-  );
+  latestMusclePlaceholder = computed(() => `Muscle : ${this.latestBodyWeightReading()?.muscleMassPercentage ?? '-'} %`);
 
   async addWeight(weight: number, bodyFat?: number, muscleMass?: number) {
     if (weight <= 0) return;

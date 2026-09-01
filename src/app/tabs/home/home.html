@@ -66,6 +66,7 @@
       </div>
       <ion-button
         class="ion-flex-1 ion-no-margin"
+        [disabled]="!weight.value"
         (click)="
           addWeight(+weight.value!, fat.value ? +fat.value : undefined, muscle.value ? +muscle.value : undefined)
         "
