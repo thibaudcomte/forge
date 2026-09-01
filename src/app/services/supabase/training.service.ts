@@ -171,10 +171,9 @@ export class TrainingService {
     const { data: workoutExercises, error: exercisesError } = await supabase
       .from('workout_exercises')
       .insert(
-        exercises.map((exercise, position) => ({
+        exercises.map((exercise) => ({
           workout_id: workout.id,
           exercise_id: exercise.id,
-          position,
         })),
       )
       .select('id');

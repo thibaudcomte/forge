@@ -66,7 +66,7 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Current Body Fat %</ion-card-title>
+      <ion-card-title>Body Fat %</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-text color="primary" class="text-big">{{ latestWeight?.bodyFatPercentage }}%</ion-text>
@@ -84,6 +84,19 @@
       </div>
       <ion-progress-bar class="ion-margin-vertical" value="0.14" color="secondary"></ion-progress-bar>
       <ion-text color="neutral">Target: 12%</ion-text>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Muscle Mass %</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-text color="primary" class="text-big">{{ latestWeight?.muscleMassPercentage ?? 'N/A' }}%</ion-text>
+      <ion-badge color="success" class="ion-margin-start ion-display-inline-flex ion-align-content-baseline">
+        <ion-icon name="checkmark-circle-outline"></ion-icon>
+        Standard
+      </ion-badge>
     </ion-card-content>
   </ion-card>
 

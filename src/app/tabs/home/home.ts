@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   IonButton,
@@ -19,7 +19,7 @@ import {
 import { addIcons } from 'ionicons';
 import { addCircleOutline, calendarClearOutline, playCircleOutline, scaleOutline } from 'ionicons/icons';
 import { TrainingService } from '../../services/supabase/training.service';
-import { WeightService } from '../../services/supabase/weight.service';
+import { WeightEntry, WeightService } from '../../services/supabase/weight.service';
 import { LogState } from '../../state/log-state';
 
 interface Program {
@@ -73,6 +73,8 @@ export class HomePage implements OnInit {
       label: todaysRawProgram.description,
       exercises: todaysRawProgram.exercisesCount,
     });
+
+    this.latestBodyWeightReading.set(await this.weightService.getLatestWeightReading());
   }
 
   startWorkout() {
@@ -82,11 +84,29 @@ export class HomePage implements OnInit {
     this.router.navigate(['/tabs/log', program.id]);
   }
 
-  async addWeight(weight: number, bodyFat?: number) {
+  latestBodyWeightReading = signal<WeightEntry | null>(null);
+
+  bodyWeightSummary = computed(() => {
+    const reading = this.latestBodyWeightReading();
+    if (!reading) return '';
+    const daysOld = Math.floor((new Date().getTime() - reading.recordedAt.getTime()) / (1000 * 60 * 60 * 24));
+    if (daysOld <= 0) return 'Last Logged: today';
+    if (daysOld === 1) return 'Last Logged: yesterday';
+    return `Last Logged: ${daysOld} days ago`;
+  });
+
+  latestWeightPlaceholder = computed(() => `Weight : ${this.latestBodyWeightReading()?.weightKg} kg`);
+  latestFatPlaceholder = computed(() => `Fat : ${this.latestBodyWeightReading()?.bodyFatPercentage ?? '-'} %`);
+  latestMusclePlaceholder = computed(
+    () => `Muscle Mass : ${this.latestBodyWeightReading()?.muscleMassPercentage ?? '-'} %`,
+  );
+
+  async addWeight(weight: number, bodyFat?: number, muscleMass?: number) {
     if (weight <= 0) return;
     if (!!bodyFat && bodyFat <= 0) return;
+    if (!!muscleMass && muscleMass <= 0) return;
 
-    await this.weightService.recordWeight(new Date(), weight, bodyFat);
+    await this.weightService.recordWeight(new Date(), weight, bodyFat, muscleMass);
 
     const toast = await this.toastController.create({
       message: 'Weight saved',

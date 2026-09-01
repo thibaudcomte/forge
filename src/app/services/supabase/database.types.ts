@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.17"
+    PostgrestVersion: "14.5"
   }
   public: {
     Tables: {
@@ -90,7 +90,7 @@ export type Database = {
           exercise_id: number
           id?: number
           notes?: string | null
-          position?: number
+          position: number
           program_id: number
           reps_range: string
           sets_count: number
@@ -142,18 +142,21 @@ export type Database = {
       weight_entries: {
         Row: {
           body_fat_pct: number | null
+          muscle_mass_pct: number | null
           recorded_at: string
           user_id: string
           weight_kg: number
         }
         Insert: {
           body_fat_pct?: number | null
+          muscle_mass_pct?: number | null
           recorded_at?: string
           user_id?: string
           weight_kg: number
         }
         Update: {
           body_fat_pct?: number | null
+          muscle_mass_pct?: number | null
           recorded_at?: string
           user_id?: string
           weight_kg?: number
@@ -165,21 +168,18 @@ export type Database = {
           exercise_id: number
           id: number
           notes: string | null
-          position: number
           workout_id: number
         }
         Insert: {
           exercise_id: number
           id?: number
           notes?: string | null
-          position?: number
           workout_id: number
         }
         Update: {
           exercise_id?: number
           id?: number
           notes?: string | null
-          position?: number
           workout_id?: number
         }
         Relationships: [

@@ -38,16 +38,37 @@
         <ion-icon name="scale-outline"></ion-icon>
         <span class="ion-margin-start">Body Weight</span>
       </ion-card-title>
-      <ion-card-subtitle>Last Logged: 2 days ago</ion-card-subtitle>
+      <ion-card-subtitle>{{ bodyWeightSummary() }}</ion-card-subtitle>
     </ion-card-header>
-    <ion-card-content class="ion-display-flex ion-align-items-stretch gap">
+    <ion-card-content class="ion-display-flex ion-flex-column ion-align-items-stretch gap">
+      <ion-input
+        class="ion-flex-1"
+        type="number"
+        fill="outline"
+        placeholder="{{ latestWeightPlaceholder() }}"
+        #weight
+      ></ion-input>
       <div class="ion-display-flex gap">
-        <ion-input class="ion-flex-1" type="number" fill="outline" placeholder="Weight : 68" #weight></ion-input>
-        <ion-input class="ion-flex-1" type="number" fill="outline" placeholder="Fat : 14%" #fat></ion-input>
+        <ion-input
+          class="ion-flex-1"
+          type="number"
+          fill="outline"
+          placeholder="{{ latestFatPlaceholder() }}"
+          #fat
+        ></ion-input>
+        <ion-input
+          class="ion-flex-1"
+          type="number"
+          fill="outline"
+          placeholder="{{ latestMusclePlaceholder() }}"
+          #muscle
+        ></ion-input>
       </div>
       <ion-button
         class="ion-flex-1 ion-no-margin"
-        (click)="addWeight(+weight.value!, fat.value ? +fat.value : undefined)"
+        (click)="
+          addWeight(+weight.value!, fat.value ? +fat.value : undefined, muscle.value ? +muscle.value : undefined)
+        "
       >
         <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
       </ion-button>

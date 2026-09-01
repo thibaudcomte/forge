@@ -11,6 +11,7 @@ export interface WeightEntry {
   recordedAt: Date;
   weightKg: number;
   bodyFatPercentage: number | null;
+  muscleMassPercentage: number | null;
 }
 
 @Service()
@@ -23,11 +24,12 @@ export class WeightService {
    * @param weightKg - Weight in kilograms.
    * @param bodyFatPct - Optional body-fat percentage.
    */
-  async recordWeight(recordedAt: Date, weightKg: number, bodyFatPct?: number) {
+  async recordWeight(recordedAt: Date, weightKg: number, bodyFatPct?: number, muscleMassPct?: number) {
     const { error } = await supabase.from('weight_entries').insert({
       recorded_at: recordedAt.toISOString(),
       weight_kg: weightKg,
       body_fat_pct: bodyFatPct ?? null,
+      muscle_mass_pct: muscleMassPct ?? null,
       user_id: this.auth.user()?.id,
     });
 
@@ -35,6 +37,27 @@ export class WeightService {
       console.error('Error recording weight entry:', error);
       throw new Error(error.message);
     }
+  }
+
+  async getLatestWeightReading() {
+    const response = await supabase
+      .from('weight_entries')
+      .select('recorded_at, weight_kg, body_fat_pct, muscle_mass_pct')
+      .order('recorded_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (response.error) {
+      console.error('Error fetching weight entries:', response.error);
+      throw new Error(response.error.message);
+    }
+
+    return {
+      recordedAt: new Date(response.data.recorded_at),
+      weightKg: response.data.weight_kg,
+      bodyFatPercentage: response.data.body_fat_pct,
+      muscleMassPercentage: response.data.muscle_mass_pct,
+    } as WeightEntry;
   }
 
   /**
@@ -45,7 +68,7 @@ export class WeightService {
   async getWeights(dateRange?: WeightDateRange): Promise<WeightEntry[]> {
     let query = supabase
       .from('weight_entries')
-      .select('recorded_at, weight_kg, body_fat_pct')
+      .select('recorded_at, weight_kg, body_fat_pct, muscle_mass_pct')
       .order('recorded_at', { ascending: true });
 
     if (dateRange) {
@@ -64,6 +87,7 @@ export class WeightService {
           recordedAt: new Date(entry.recorded_at),
           weightKg: entry.weight_kg,
           bodyFatPercentage: entry.body_fat_pct ?? null,
+          muscleMassPercentage: entry.muscle_mass_pct ?? null,
         }))
       : [];
   }
