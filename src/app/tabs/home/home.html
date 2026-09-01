@@ -23,7 +23,7 @@
     <ion-card-content>
       <h1>{{ program ? `${program.name}: ${program.label}` : 'Loading...' }}</h1>
       @if (program) {
-        <p>{{ program.exercises }} Exercises &bull; Est. 55 minutes</p>
+        <ion-text>{{ program.exercises }} Exercises &bull; Est. 55 minutes</ion-text>
       }
       <ion-button class="ion-padding" expand="block" [disabled]="!program" (click)="startWorkout()">
         <ion-icon slot="start" name="play-circle-outline"></ion-icon>
