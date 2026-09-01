@@ -1,4 +1,5 @@
-import { Service } from '@angular/core';
+import { inject, Service } from '@angular/core';
+import { AuthService } from './auth.service';
 import { supabase } from './client';
 
 export interface WeightDateRange {
@@ -14,6 +15,8 @@ export interface WeightEntry {
 
 @Service()
 export class WeightService {
+  private readonly auth = inject(AuthService);
+
   /**
    * Saves a single body-weight measurement.
    * @param recordedAt - When the reading was taken.
@@ -25,6 +28,7 @@ export class WeightService {
       recorded_at: recordedAt.toISOString(),
       weight_kg: weightKg,
       body_fat_pct: bodyFatPct ?? null,
+      user_id: this.auth.user()?.id,
     });
 
     if (error) {

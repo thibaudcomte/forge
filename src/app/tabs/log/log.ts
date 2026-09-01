@@ -16,7 +16,7 @@ import type { OverlayEventDetail } from '@ionic/core';
 import { addIcons } from 'ionicons';
 import { arrowForwardOutline, checkmarkCircleOutline, listCircleOutline } from 'ionicons/icons';
 import { from, switchMap } from 'rxjs';
-import { SupabaseService } from '../../services/supabase/service';
+import { TrainingService } from '../../services/supabase/training.service';
 import { LogState } from '../../state/log-state';
 import { ExerciseComponent } from './exercise/exercise';
 
@@ -70,7 +70,7 @@ export class LogPage {
     effect(() => this.state.beginWorkout(this.programId()));
   }
 
-  private readonly supabase = inject(SupabaseService);
+  private readonly supabase = inject(TrainingService);
   private readonly state = inject(LogState);
 
   readonly programId = input.required<number>();
@@ -162,7 +162,7 @@ export class LogPage {
 
     const toast = await this.toastController.create({
       message: 'Workout was saved successfully!',
-      duration: 3000,
+      duration: 3_000,
       position: 'bottom',
     });
 

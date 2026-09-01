@@ -14,10 +14,11 @@ import {
   IonText,
   IonTitle,
   IonToolbar,
+  ToastController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { addCircleOutline, calendarClearOutline, playCircleOutline, scaleOutline } from 'ionicons/icons';
-import { SupabaseService } from '../../services/supabase/service';
+import { TrainingService } from '../../services/supabase/training.service';
 import { WeightService } from '../../services/supabase/weight.service';
 import { LogState } from '../../state/log-state';
 
@@ -52,12 +53,12 @@ export class HomePage implements OnInit {
     addIcons({ calendarClearOutline, playCircleOutline, addCircleOutline, scaleOutline });
   }
 
-  private readonly supabase = inject(SupabaseService);
+  private readonly supabase = inject(TrainingService);
   private readonly weightService = inject(WeightService);
   private readonly state = inject(LogState);
   private readonly router = inject(Router);
+  private readonly toastController = inject(ToastController);
 
-  message = signal(`You're on a 12-day streak. Keep the momentum!`);
   todaysProgram = signal<Program | undefined>(undefined);
 
   async ngOnInit() {
@@ -84,6 +85,15 @@ export class HomePage implements OnInit {
   async addWeight(weight: number, bodyFat?: number) {
     if (weight <= 0) return;
     if (!!bodyFat && bodyFat <= 0) return;
+
     await this.weightService.recordWeight(new Date(), weight, bodyFat);
+
+    const toast = await this.toastController.create({
+      message: 'Weight saved',
+      duration: 3_000,
+      position: 'bottom',
+    });
+
+    await toast.present();
   }
 }

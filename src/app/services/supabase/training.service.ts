@@ -1,4 +1,5 @@
-import { Service } from '@angular/core';
+import { inject, Service } from '@angular/core';
+import { AuthService } from './auth.service';
 import { supabase } from './client';
 
 export interface ProgramLight {
@@ -36,7 +37,8 @@ export interface WorkoutExercise {
 }
 
 @Service()
-export class SupabaseService {
+export class TrainingService {
+  private readonly auth = inject(AuthService);
   async getProgramsLight() {
     const { data, error } = await supabase
       .from('programs')
@@ -157,7 +159,7 @@ export class SupabaseService {
   ) {
     const { data: workout, error: workoutError } = await supabase
       .from('workouts')
-      .insert({ program_id: programId, performed_at: new Date().toISOString() })
+      .insert({ program_id: programId, performed_at: new Date().toISOString(), user_id: this.auth.user()?.id })
       .select('id')
       .single();
 

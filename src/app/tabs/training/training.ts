@@ -17,7 +17,7 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { calendarOutline } from 'ionicons/icons';
-import { SupabaseService } from '../../services/supabase/service';
+import { TrainingService } from '../../services/supabase/training.service';
 import { LogState } from '../../state/log-state';
 
 interface Program {
@@ -53,7 +53,7 @@ export class TrainingPage implements OnInit {
     addIcons({ calendarOutline });
   }
 
-  private readonly supabase = inject(SupabaseService);
+  private readonly supabase = inject(TrainingService);
   private readonly state = inject(LogState);
   private readonly router = inject(Router);
 
