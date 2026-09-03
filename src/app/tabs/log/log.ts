@@ -117,7 +117,7 @@ export class LogPage {
     this.workout().exercises.some((exercise) => !this.completedExerciseIds().has(exercise.id)),
   );
 
-  @ViewChild(IonContent) content!: IonContent;
+  @ViewChild(IonContent, { static: true }) content!: IonContent;
 
   isCurrentExerciseComplete() {
     const exercise = this.currentExercise();
@@ -148,12 +148,13 @@ export class LogPage {
       ),
   );
 
-  onPickExerciseDone(event: CustomEvent<OverlayEventDetail<ExerciseData>>) {
+  async onPickExerciseDone(event: CustomEvent<OverlayEventDetail<ExerciseData>>) {
     event.preventDefault();
     const exerciseId = event.detail.data?.id;
     if (!exerciseId) return;
     this.currentExerciseId.set(exerciseId);
-    this.content.scrollToTop(300);
+    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+    await this.content.scrollToTop(300);
   }
 
   async save() {
