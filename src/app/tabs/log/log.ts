@@ -36,6 +36,7 @@ export interface WorkoutExercise {
     weight: number;
   } | null;
   restTimeSeconds: number;
+  notes?: string;
   completed: boolean;
 }
 
@@ -92,6 +93,7 @@ export class LogPage {
               name: e.name,
               repsRange: e.repsRange,
               restTimeSeconds: e.restTimeSeconds,
+              notes: e.notes,
               completed: false,
               bestSet: e.bestSet,
               sets: e.sets.map(

@@ -1,4 +1,5 @@
 import { Component, effect, input, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import {
   IonButton,
   IonCard,
@@ -8,6 +9,7 @@ import {
   IonCardTitle,
   IonIcon,
   IonText,
+  IonTextarea,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { stopwatchOutline, timeOutline } from 'ionicons/icons';
@@ -23,6 +25,7 @@ import { ExerciseSetComponent } from './set/exercise-set';
 @Component({
   selector: 'exercise',
   imports: [
+    FormsModule,
     IonCard,
     IonCardHeader,
     IonCardTitle,
@@ -33,9 +36,9 @@ import { ExerciseSetComponent } from './set/exercise-set';
     IonText,
     IonButton,
     SecondsPipe,
+    IonTextarea,
   ],
   templateUrl: './exercise.html',
-  styleUrl: './exercise.css',
 })
 export class ExerciseComponent {
   readonly exercise = input.required<WorkoutExercise>();

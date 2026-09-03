@@ -8,15 +8,22 @@
       >
     </ion-card-header>
     <ion-card-content>
-      <div class="last-session">
-        <ion-icon name="time-outline" color="secondary"></ion-icon>
-        <ion-text color="medium">Best Session:</ion-text>
-        @if (exo.bestSet) {
-          <ion-text color="white">{{ exo.bestSet.reps }} reps &bull; {{ exo.bestSet.weight }} kg</ion-text>
-        } @else {
-          <ion-text color="white">No previous sets</ion-text>
-        }
-      </div>
+      @if (exo.bestSet) {
+        <ion-card>
+          <ion-card-content class="ion-display-flex ion-align-items-baseline gap">
+            <ion-icon name="time-outline" color="secondary"></ion-icon>
+            <ion-text color="medium">Best Session:</ion-text>
+            <ion-text color="white">{{ exo.bestSet.reps }} reps &bull; {{ exo.bestSet.weight }} kg</ion-text>
+          </ion-card-content>
+        </ion-card>
+      }
+      <ion-textarea
+        placeholder="Notes..."
+        autoGrow="true"
+        fill="outline"
+        [(ngModel)]="exo.notes"
+        class="ion-padding-bottom"
+      ></ion-textarea>
       @for (set of exo.sets; track $index) {
         <exercise-set
           [hasHeader]="$index == 0"

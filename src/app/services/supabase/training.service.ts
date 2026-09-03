@@ -34,6 +34,7 @@ export interface WorkoutExercise {
     weight: number;
   } | null;
   restTimeSeconds: number;
+  notes?: string;
 }
 
 @Service()
@@ -91,7 +92,8 @@ export class TrainingService {
           performed_at,
           workout_exercises (
             exercise_id,
-            exercise_sets (set_index, reps, weight)
+            exercise_sets (set_index, reps, weight),
+            notes
           )
         )`,
       )
@@ -145,6 +147,7 @@ export class TrainingService {
             sets,
             bestSet,
             restTimeSeconds: programExercise.exercises.rest_time_seconds,
+            notes: workoutExercise?.notes ?? '',
           };
         }),
     } satisfies Workout;
@@ -155,6 +158,7 @@ export class TrainingService {
     exercises: {
       id: number;
       sets: { position: number; reps: number; weight: number }[];
+      notes?: string;
     }[],
   ) {
     const { data: workout, error: workoutError } = await supabase
@@ -174,6 +178,7 @@ export class TrainingService {
         exercises.map((exercise) => ({
           workout_id: workout.id,
           exercise_id: exercise.id,
+          notes: exercise.notes ?? '',
         })),
       )
       .select('id');
