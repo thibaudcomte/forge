@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal, ViewChild } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import {
   ActionSheetButton,
@@ -117,6 +117,8 @@ export class LogPage {
     this.workout().exercises.some((exercise) => !this.completedExerciseIds().has(exercise.id)),
   );
 
+  @ViewChild(IonContent) content!: IonContent;
+
   isCurrentExerciseComplete() {
     const exercise = this.currentExercise();
     return exercise?.completed;
@@ -151,6 +153,7 @@ export class LogPage {
     const exerciseId = event.detail.data?.id;
     if (!exerciseId) return;
     this.currentExerciseId.set(exerciseId);
+    this.content.scrollToTop(300);
   }
 
   async save() {

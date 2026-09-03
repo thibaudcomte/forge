@@ -18,6 +18,7 @@ import {
 import { addIcons } from 'ionicons';
 import { alertCircleOutline, arrowUpOutline, checkmarkCircleOutline } from 'ionicons/icons';
 import { environment } from '../../../environments/environment';
+import { RelativeDatePipe } from '../../pipes/relative-date-pipe';
 import { WeightEntry, WeightService } from '../../services/supabase/weight.service';
 
 @Component({
@@ -37,6 +38,7 @@ import { WeightEntry, WeightService } from '../../services/supabase/weight.servi
     IonIcon,
     IonButton,
     IonProgressBar,
+    RelativeDatePipe,
   ],
   templateUrl: './trends.html',
 })
@@ -53,30 +55,24 @@ export class TrendsPage {
     return entries[entries.length - 1];
   });
 
-  readonly weightDifference = computed(() => {
+  readonly bodyCompositionDelta = computed(() => {
     const entries = this.weightEntries();
     if (entries.length < 2) {
-      return 0;
+      return { weight: '-', muscleMass: '-', bodyFat: '-' };
     }
 
     const firstEntry = entries[0];
     const latestEntry = this.latestWeightEntry()!;
-    return latestEntry.weightKg - firstEntry.weightKg;
-  });
 
-  readonly weightSummary = computed(() => {
-    const latestEntry = this.latestWeightEntry();
-    if (!latestEntry) {
-      return 'No logged data yet.';
-    }
+    const weightDelta = latestEntry.weightKg - firstEntry.weightKg;
+    const muscleMassDelta = (latestEntry.muscleMassPercentage ?? 0) - (firstEntry.muscleMassPercentage ?? 0);
+    const bodyFatDelta = (latestEntry.bodyFatPercentage ?? 0) - (firstEntry.bodyFatPercentage ?? 0);
 
-    const latestEntryDate = new Date(latestEntry.recordedAt);
-    const today = new Date();
-
-    const millisecondsPerDay = 1000 * 60 * 60 * 24;
-    const daysSinceLastEntry = Math.floor((today.getTime() - latestEntryDate.getTime()) / millisecondsPerDay);
-
-    return daysSinceLastEntry === 1 ? `Last logged: 1 day ago` : `Last logged: ${daysSinceLastEntry} days ago`;
+    return {
+      weight: weightDelta > 0 ? `+${weightDelta.toFixed(1)}` : weightDelta.toFixed(1),
+      muscleMass: muscleMassDelta > 0 ? `+${muscleMassDelta.toFixed(1)}` : muscleMassDelta.toFixed(1),
+      bodyFat: bodyFatDelta > 0 ? `+${bodyFatDelta.toFixed(1)}` : bodyFatDelta.toFixed(1),
+    };
   });
 
   readonly bmi = computed(() => {

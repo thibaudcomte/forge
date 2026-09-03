@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import {
@@ -17,6 +16,7 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { calendarOutline } from 'ionicons/icons';
+import { RelativeDatePipe } from '../../pipes/relative-date-pipe';
 import { TrainingService } from '../../services/supabase/training.service';
 import { LogState } from '../../state/log-state';
 
@@ -44,7 +44,7 @@ interface Program {
     IonHeader,
     IonTitle,
     IonButton,
-    DatePipe,
+    RelativeDatePipe,
   ],
   templateUrl: './training.html',
 })

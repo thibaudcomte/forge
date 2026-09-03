@@ -17,7 +17,7 @@
             <div>{{ program.exercises }} exercises</div>
             <ion-text [color]="program.isNextScheduled ? 'secondary' : 'medium'" [class.bold]="program.isNextScheduled">
               <ion-icon name="calendar-outline"></ion-icon>
-              {{ program.lastPerformedAt ? (program.lastPerformedAt | date: 'dd MMM') : 'Never done' }}
+              {{ program.lastPerformedAt ? (program.lastPerformedAt | relativeDate) : 'Never done' }}
             </ion-text>
           </div>
           <ion-button [class.btn-gradient]="program.isNextScheduled" (click)="startWorkout(program.id)"

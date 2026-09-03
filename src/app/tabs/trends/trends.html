@@ -32,19 +32,26 @@
   @let latestWeight = latestWeightEntry();
 
   <ion-card>
-    <ion-card-content class="ion-display-flex">
+    <ion-card-content class="ion-display-flex ion-justify-content-between">
       <div class="ion-flex-1 ion-display-flex ion-flex-column">
-        <ion-text class="ion-text-uppercase">Weight Change</ion-text>
-        <ion-text color="secondary">
-          <span class="text-big">{{ weightDifference() }}</span>
+        <ion-text class="ion-text-uppercase">Weight</ion-text>
+        <ion-text color="primary">
+          <span class="text-big">{{ bodyCompositionDelta().weight }}</span>
           <span>kg</span>
         </ion-text>
       </div>
       <div class="ion-flex-1 ion-display-flex ion-flex-column">
-        <ion-text class="ion-text-uppercase">Muscle Gained</ion-text>
-        <ion-text color="primary">
-          <span class="text-big">+2.1</span>
-          <span>kg</span>
+        <ion-text class="ion-text-uppercase">Muscle</ion-text>
+        <ion-text [color]="+bodyCompositionDelta().muscleMass > 0 ? 'success' : 'warning'">
+          <span class="text-big">{{ bodyCompositionDelta().muscleMass }}</span>
+          <span>%</span>
+        </ion-text>
+      </div>
+      <div class="ion-flex-1 ion-display-flex ion-flex-column">
+        <ion-text class="ion-text-uppercase">Fat</ion-text>
+        <ion-text [color]="+bodyCompositionDelta().bodyFat <= 0 ? 'success' : 'warning'">
+          <span class="text-big">{{ bodyCompositionDelta().bodyFat }}</span>
+          <span>%</span>
         </ion-text>
       </div>
     </ion-card-content>
@@ -53,7 +60,10 @@
   <ion-card>
     <ion-card-header>
       <ion-card-title>Body Weight Trend</ion-card-title>
-      <ion-card-subtitle>{{ weightSummary() }}</ion-card-subtitle>
+      @let weightRecordedAt = latestWeight?.recordedAt;
+      <ion-card-subtitle>{{
+        weightRecordedAt ? 'Last recorded: ' + (weightRecordedAt | relativeDate) : 'Never logged'
+      }}</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content class="ion-display-flex gap">
       <ion-text color="secondary"> {{ latestWeight?.weightKg?.toFixed(1) }} kg</ion-text>
