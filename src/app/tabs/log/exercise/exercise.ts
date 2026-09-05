@@ -1,7 +1,8 @@
 import { Component, effect, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Haptics } from '@capacitor/haptics';
+import { LocalNotifications } from '@capacitor/local-notifications';
 import {
-  IonButton,
   IonCard,
   IonCardContent,
   IonCardHeader,
@@ -13,14 +14,9 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { stopwatchOutline, timeOutline } from 'ionicons/icons';
-import { SecondsPipe } from '../../../pipes/seconds-pipe';
 import { WorkoutExercise } from '../log';
+import { RestButton } from './rest-button';
 import { ExerciseSetComponent } from './set/exercise-set';
-
-// interface CountdownPlugin {
-//   start(options: { seconds: number }): Promise<void>;
-//   stop(): Promise<void>;
-// }
 
 @Component({
   selector: 'exercise',
@@ -34,15 +30,13 @@ import { ExerciseSetComponent } from './set/exercise-set';
     ExerciseSetComponent,
     IonIcon,
     IonText,
-    IonButton,
-    SecondsPipe,
     IonTextarea,
+    RestButton,
   ],
   templateUrl: './exercise.html',
 })
 export class ExerciseComponent {
   readonly exercise = input.required<WorkoutExercise>();
-  // private readonly countdown = registerPlugin<CountdownPlugin>('Countdown');
 
   constructor() {
     addIcons({ timeOutline, stopwatchOutline });
@@ -59,10 +53,26 @@ export class ExerciseComponent {
     return set?.reps && set?.reps > 0 && set?.weight && set?.weight > 0;
   }
 
-  startRestTimer(): void {
-    if (!this.canStartRestTimer()) return;
-    // void this.countdown.start({ seconds: 90 });
-    this.exercise().completed = true;
-    this.currentSetIndex.update((idx) => Math.min(this.exercise().sets.length - 1, idx + 1));
+  async onTimerChanged(event: 'start' | 'stop') {
+    if (event === 'start') {
+      if (!this.canStartRestTimer()) return;
+      LocalNotifications.schedule({
+        notifications: [
+          {
+            id: 1,
+            title: 'Time to Resume Your Workout',
+            body: 'Your rest time is over.',
+            schedule: { at: new Date(Date.now() + this.exercise().restTimeSeconds * 1000) },
+          },
+        ],
+      });
+    }
+
+    if (event === 'stop') {
+      if (!this.canStartRestTimer()) return;
+      await Haptics.vibrate({ duration: 1_000 });
+      this.exercise().completed = true;
+      this.currentSetIndex.update((idx) => Math.min(this.exercise().sets.length - 1, idx + 1));
+    }
   }
 }

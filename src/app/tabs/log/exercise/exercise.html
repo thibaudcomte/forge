@@ -25,29 +25,13 @@
         class="ion-padding-bottom"
       ></ion-textarea>
       @for (set of exo.sets; track $index) {
-        <exercise-set
-          [hasHeader]="$index == 0"
-          [disabled]="$index !== currentSetIndex()"
-          [set]="exo.sets[$index]"
-          class="ion-margin-vertical"
-        ></exercise-set>
-        @if ($index === currentSetIndex()) {
-          <ion-button
-            expand="block"
-            fill="outline"
-            color="secondary"
-            class="btn-large-radius ion-padding-vertical"
+        <exercise-set [hasHeader]="$index == 0" [set]="exo.sets[$index]" class="ion-margin-vertical"></exercise-set>
+        @if ($index === currentSetIndex() && !exo.completed) {
+          <rest-button
+            [seconds]="exo.restTimeSeconds"
             [disabled]="!canStartRestTimer()"
-            (click)="startRestTimer()"
-          >
-            <div class="ion-display-flex ion-align-items-center ion-justify-content-between bold">
-              <ion-text>Start Rest</ion-text>
-              <div class="ion-display-flex ion-align-items-center">
-                <ion-icon name="stopwatch-outline"></ion-icon>
-                <ion-text class="ion-margin-start">{{ exo.restTimeSeconds | seconds }}</ion-text>
-              </div>
-            </div>
-          </ion-button>
+            (changed)="onTimerChanged($event)"
+          ></rest-button>
         }
       }
     </ion-card-content>

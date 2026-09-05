@@ -194,4 +194,12 @@
   .bold {
     font-weight: bold;
   }
+
+  .current-exercise {
+    color: var(--ion-color-primary) !important;
+  }
+
+  .completed-exercise {
+    color: var(--ion-color-success) !important;
+  }
 }

@@ -5,28 +5,25 @@
 </ion-header>
 
 <ion-content>
-  <div class="ion-display-flex ion-justify-content-between ion-align-items-center">
-    <span class="ion-flex-1">Your progress over the last {{ selectedRange() }} days.</span>
-    <div class="ion-display-flex ion-flex-nowrap ion-align-items-center">
-      <ion-button
-        shape="round"
-        [fill]="selectedRange() === 30 ? 'solid' : 'outline'"
-        size="small"
-        color="secondary"
-        (click)="selectRange(30)"
-      >
-        30D
-      </ion-button>
-      <ion-button
-        shape="round"
-        [fill]="selectedRange() === 90 ? 'solid' : 'outline'"
-        size="small"
-        color="secondary"
-        (click)="selectRange(90)"
-      >
-        90D
-      </ion-button>
-    </div>
+  <div class="ion-display-flex ion-flex-nowrap ion-align-items-center gap">
+    <ion-button
+      shape="round"
+      [fill]="selectedRange() === 30 ? 'solid' : 'outline'"
+      size="small"
+      color="secondary"
+      (click)="selectRange(30)"
+    >
+      Last 30 days
+    </ion-button>
+    <ion-button
+      shape="round"
+      [fill]="selectedRange() === 90 ? 'solid' : 'outline'"
+      size="small"
+      color="secondary"
+      (click)="selectRange(90)"
+    >
+      Last 90 days
+    </ion-button>
   </div>
 
   @let latestWeight = latestWeightEntry();

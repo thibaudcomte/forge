@@ -14,7 +14,13 @@ import {
 } from '@ionic/angular/standalone';
 import type { OverlayEventDetail } from '@ionic/core';
 import { addIcons } from 'ionicons';
-import { arrowForwardOutline, checkmarkCircleOutline, listCircleOutline } from 'ionicons/icons';
+import {
+  arrowForwardCircleOutline,
+  arrowForwardOutline,
+  caretForwardCircleOutline,
+  checkmarkCircleOutline,
+  listCircleOutline,
+} from 'ionicons/icons';
 import { from, switchMap } from 'rxjs';
 import { TrainingService } from '../../services/supabase/training.service';
 import { LogState } from '../../state/log-state';
@@ -67,7 +73,13 @@ interface ExerciseData {
 })
 export class LogPage {
   constructor(private toastController: ToastController) {
-    addIcons({ arrowForwardOutline, listCircleOutline, checkmarkCircleOutline });
+    addIcons({
+      arrowForwardOutline,
+      arrowForwardCircleOutline,
+      caretForwardCircleOutline,
+      listCircleOutline,
+      checkmarkCircleOutline,
+    });
     effect(() => this.state.beginWorkout(this.programId()));
   }
 
@@ -137,18 +149,29 @@ export class LogPage {
     if (remaining) this.currentExerciseId.set(remaining.id);
   }
 
-  exercisesActionSheetButtons = computed<ActionSheetButton<ExerciseData>[]>(() =>
-    this.workout()
-      .exercises.filter((e) => !this.completedExerciseIds().has(e.id))
-      .filter((e) => e !== this.currentExercise())
-      .map(
-        (e) =>
-          ({
-            text: e.name,
-            data: { id: e.id },
-          }) as ActionSheetButton<ExerciseData>,
-      ),
-  );
+  exercisesActionSheetButtons = computed<ActionSheetButton<ExerciseData>[]>(() => {
+    const getIcon = (exerciseId: number) => {
+      if (this.completedExerciseIds().has(exerciseId)) return 'checkmark-circle-outline';
+      if (this.currentExercise().id === exerciseId) return 'arrow-forward-outline';
+      return 'caret-forward-circle-outline';
+    };
+
+    const getCssClass = (exerciseId: number) => {
+      if (this.completedExerciseIds().has(exerciseId)) return 'completed-exercise';
+      if (this.currentExercise().id === exerciseId) return 'current-exercise';
+      return '';
+    };
+
+    return this.workout().exercises.map(
+      (e) =>
+        ({
+          text: e.name,
+          data: { id: e.id },
+          icon: getIcon(e.id),
+          cssClass: getCssClass(e.id),
+        }) as ActionSheetButton<ExerciseData>,
+    );
+  });
 
   async onPickExerciseDone(event: CustomEvent<OverlayEventDetail<ExerciseData>>) {
     event.preventDefault();
@@ -156,7 +179,7 @@ export class LogPage {
     if (!exerciseId) return;
     this.currentExerciseId.set(exerciseId);
     await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-    await this.content.scrollToTop(300);
+    await this.content.scrollToTop(100);
   }
 
   async save() {

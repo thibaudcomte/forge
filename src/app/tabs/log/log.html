@@ -18,27 +18,27 @@
       Next Exercise
       <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
     </ion-button>
-    <ion-button
-      id="pick-exercise"
-      expand="block"
-      class="ion-padding-vertical btn-large-radius"
-      fill="outline"
-      color="medium"
-    >
-      <ion-icon name="list-circle-outline" slot="start"></ion-icon>
-      Pick Exercise
-    </ion-button>
-    <ion-action-sheet
-      trigger="pick-exercise"
-      header="Pick a Remaining Exercise"
-      [buttons]="exercisesActionSheetButtons()"
-      (didDismiss)="onPickExerciseDone($event)"
-    >
-    </ion-action-sheet>
   } @else {
     <ion-button expand="block" class="btn-gradient btn-large-radius ion-padding-vertical" (click)="save()">
       Finish & Save Workout
       <ion-icon name="checkmark-circle-outline" slot="end"></ion-icon>
     </ion-button>
   }
+  <ion-button
+    id="go-to-exercise"
+    expand="block"
+    class="ion-padding-vertical btn-large-radius"
+    fill="outline"
+    color="medium"
+  >
+    <ion-icon name="list-circle-outline" slot="start"></ion-icon>
+    Explore Exercises
+  </ion-button>
+  <ion-action-sheet
+    trigger="go-to-exercise"
+    header="Choose Exercise"
+    [buttons]="exercisesActionSheetButtons()"
+    (didDismiss)="onPickExerciseDone($event)"
+  >
+  </ion-action-sheet>
 </ion-content>
