@@ -14,7 +14,7 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { stopwatchOutline, timeOutline } from 'ionicons/icons';
-import { WorkoutExercise } from '../log';
+import { WorkoutExercise } from '../../../state/log-state';
 import { RestButton } from './rest-button';
 import { ExerciseSetComponent } from './set/exercise-set';
 
@@ -56,7 +56,10 @@ export class ExerciseComponent {
   async onTimerChanged(event: 'start' | 'stop') {
     if (event === 'start') {
       if (!this.canStartRestTimer()) return;
-      LocalNotifications.schedule({
+
+      LocalNotifications.cancel({ notifications: [{ id: 1 }] });
+
+      await LocalNotifications.schedule({
         notifications: [
           {
             id: 1,
@@ -72,7 +75,7 @@ export class ExerciseComponent {
       await Haptics.vibrate({ duration: 1_000 });
       this.currentSetIndex.update((idx) => Math.min(this.exercise().sets.length - 1, idx + 1));
       if (this.currentSetIndex() === this.exercise().sets.length - 1) {
-        this.exercise().completed = true;
+        this.exercise().completed.set(true);
       }
     }
   }

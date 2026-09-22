@@ -1,5 +1,4 @@
 import { Component, computed, effect, inject, input, signal, ViewChild } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import {
   ActionSheetButton,
@@ -22,36 +21,9 @@ import {
   checkmarkCircleOutline,
   listCircleOutline,
 } from 'ionicons/icons';
-import { from, switchMap } from 'rxjs';
 import { TrainingService } from '../../services/supabase/training.service';
 import { LogState } from '../../state/log-state';
 import { ExerciseComponent } from './exercise/exercise';
-
-export interface Workout {
-  programId: number;
-  name: string;
-  exercises: WorkoutExercise[];
-}
-
-export interface WorkoutExercise {
-  id: number;
-  name: string;
-  repsRange: string | null;
-  sets: WorkoutExerciseSet[];
-  bestSet: {
-    reps: number;
-    weight: number;
-  } | null;
-  restTimeSeconds: number;
-  notes?: string;
-  completed: boolean;
-}
-
-export interface WorkoutExerciseSet {
-  position: number;
-  reps: number;
-  weight: number;
-}
 
 interface ExerciseData {
   id: number;
@@ -89,55 +61,23 @@ export class LogPage {
   private readonly router = inject(Router);
 
   readonly programId = input.required<number>();
+  readonly workout = computed(() => this.state.workout());
 
-  readonly previousWorkout = toSignal(
-    toObservable(this.programId).pipe(switchMap((programId) => from(this.supabase.createProgramWorkout(programId)))),
-    { initialValue: undefined },
-  );
-  readonly workout = computed(() => {
-    const previous = this.previousWorkout();
-    const result = {
-      programId: previous?.program.id,
-      name: previous?.program.name,
-      exercises:
-        previous?.exercises.map(
-          (e) =>
-            ({
-              id: e.id,
-              name: e.name,
-              repsRange: e.repsRange,
-              restTimeSeconds: e.restTimeSeconds,
-              notes: e.notes,
-              completed: false,
-              bestSet: e.bestSet,
-              sets: e.sets.map(
-                (s, i) =>
-                  ({
-                    position: i,
-                    reps: s.reps,
-                    weight: s.weight,
-                  }) as WorkoutExerciseSet,
-              ),
-            }) as WorkoutExercise,
-        ) ?? [],
-    } as Workout;
-    return result;
-  });
   readonly currentExerciseId = signal(0);
   readonly completedExerciseIds = signal<ReadonlySet<number>>(new Set());
   readonly currentExercise = computed(() => {
-    const exercises = this.workout().exercises;
-    return exercises.find((exercise) => exercise.id === this.currentExerciseId()) ?? exercises[0];
+    const exercises = this.state.workout()?.exercises ?? [];
+    return exercises.find((exercise) => exercise.id === this.currentExerciseId()) ?? exercises?.[0];
   });
   readonly hasRemainingExercise = computed(() =>
-    this.workout().exercises.some((exercise) => !this.completedExerciseIds().has(exercise.id)),
+    this.state.workout()?.exercises.some((exercise) => !this.completedExerciseIds().has(exercise.id)),
   );
 
   @ViewChild(IonContent, { static: true }) content!: IonContent;
 
   isCurrentExerciseComplete() {
     const exercise = this.currentExercise();
-    return exercise?.completed;
+    return exercise?.completed() ?? false;
   }
 
   nextExercise() {
@@ -147,24 +87,26 @@ export class LogPage {
     if (!currentExercise) return;
     this.completedExerciseIds.update((completedIds) => new Set(completedIds).add(currentExercise.id));
 
-    const remaining = this.workout().exercises.find((exercise) => !this.completedExerciseIds().has(exercise.id));
+    const remaining = this.state.workout()?.exercises.find((exercise) => !this.completedExerciseIds().has(exercise.id));
     if (remaining) this.currentExerciseId.set(remaining.id);
   }
 
   exercisesActionSheetButtons = computed<ActionSheetButton<ExerciseData>[]>(() => {
     const getIcon = (exerciseId: number) => {
       if (this.completedExerciseIds().has(exerciseId)) return 'checkmark-circle-outline';
-      if (this.currentExercise().id === exerciseId) return 'arrow-forward-outline';
+      if (this.currentExercise()?.id === exerciseId) return 'arrow-forward-outline';
       return 'caret-forward-circle-outline';
     };
 
     const getCssClass = (exerciseId: number) => {
       if (this.completedExerciseIds().has(exerciseId)) return 'completed-exercise';
-      if (this.currentExercise().id === exerciseId) return 'current-exercise';
+      if (this.currentExercise()?.id === exerciseId) return 'current-exercise';
       return '';
     };
 
-    return this.workout().exercises.map(
+    if (!this.state.workout()) return [];
+
+    return this.state.workout()!.exercises.map(
       (e) =>
         ({
           text: e.name,
@@ -185,8 +127,8 @@ export class LogPage {
   }
 
   async save() {
-    const workout = this.workout();
-    if (!workout.programId) return;
+    const workout = this.state.workout();
+    if (!workout?.programId) return;
 
     await this.supabase.saveWorkout(workout.programId, workout.exercises);
     this.state.endWorkout();

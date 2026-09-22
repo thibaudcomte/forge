@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { IonInput } from '@ionic/angular/standalone';
-import { WorkoutExerciseSet } from '../../log';
+import { WorkoutExerciseSet } from '../../../../state/log-state';
 
 @Component({
   selector: 'exercise-set',

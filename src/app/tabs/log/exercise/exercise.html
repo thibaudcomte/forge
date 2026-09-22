@@ -26,7 +26,7 @@
       ></ion-textarea>
       @for (set of exo.sets; track $index) {
         <exercise-set [hasHeader]="$index == 0" [set]="exo.sets[$index]" class="ion-margin-vertical"></exercise-set>
-        @if ($index === currentSetIndex() && !exo.completed) {
+        @if ($index === currentSetIndex() && !exo.completed()) {
           <rest-button
             [seconds]="exo.restTimeSeconds"
             [disabled]="!canStartRestTimer()"
