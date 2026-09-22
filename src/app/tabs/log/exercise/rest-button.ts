@@ -1,4 +1,4 @@
-import { Component, input, linkedSignal, output } from '@angular/core';
+import { Component, input, linkedSignal, OnDestroy, output } from '@angular/core';
 import { IonButton, IonIcon, IonText } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { stopwatchOutline, timeOutline } from 'ionicons/icons';
@@ -24,7 +24,7 @@ import { SecondsPipe } from '../../../pipes/seconds-pipe';
     </ion-button>
   `,
 })
-export class RestButton {
+export class RestButton implements OnDestroy {
   seconds = input.required<number>();
   disabled = input<boolean>(false);
   countdown = linkedSignal(this.seconds);
@@ -46,5 +46,10 @@ export class RestButton {
         this.changed.emit('stop');
       }
     }, 1000);
+  }
+
+  ngOnDestroy() {
+    if (this.intervalId > 0) clearInterval(this.intervalId);
+    this.intervalId = 0;
   }
 }

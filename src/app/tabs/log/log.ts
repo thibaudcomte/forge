@@ -1,5 +1,6 @@
 import { Component, computed, effect, inject, input, signal, ViewChild } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 import {
   ActionSheetButton,
   IonActionSheet,
@@ -85,6 +86,7 @@ export class LogPage {
 
   private readonly supabase = inject(TrainingService);
   private readonly state = inject(LogState);
+  private readonly router = inject(Router);
 
   readonly programId = input.required<number>();
 
@@ -191,10 +193,12 @@ export class LogPage {
 
     const toast = await this.toastController.create({
       message: 'Workout was saved successfully!',
-      duration: 3_000,
+      duration: 2_000,
       position: 'bottom',
     });
 
     await toast.present();
+
+    this.router.navigate(['/tabs/home']);
   }
 }

@@ -69,10 +69,11 @@ export class ExerciseComponent {
     }
 
     if (event === 'stop') {
-      if (!this.canStartRestTimer()) return;
       await Haptics.vibrate({ duration: 1_000 });
-      this.exercise().completed = true;
       this.currentSetIndex.update((idx) => Math.min(this.exercise().sets.length - 1, idx + 1));
+      if (this.currentSetIndex() === this.exercise().sets.length - 1) {
+        this.exercise().completed = true;
+      }
     }
   }
 }
