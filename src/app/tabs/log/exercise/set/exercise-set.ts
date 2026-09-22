@@ -11,7 +11,6 @@ import { WorkoutExerciseSet } from '../../../../state/log-state';
 export class ExerciseSetComponent {
   readonly set = input.required<WorkoutExerciseSet>();
   readonly hasHeader = input(false);
-  readonly disabled = input(false);
 
   onRepsInput(event: CustomEvent<{ value?: string | number | null }>) {
     const reps = Number(event.detail.value);

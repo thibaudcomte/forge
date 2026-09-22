@@ -8,22 +8,37 @@
       >
     </ion-card-header>
     <ion-card-content>
-      @if (exo.bestSet) {
-        <ion-card>
-          <ion-card-content class="ion-display-flex ion-align-items-baseline gap">
+      <ion-button id="open-notes" expand="block" fill="outline" color="medium" class="ion-margin-bottom">
+        @if (exo.bestSet) {
+          <div class="ion-display-flex ion-align-items-baseline gap">
             <ion-icon name="time-outline" color="secondary"></ion-icon>
             <ion-text color="medium">Best Session:</ion-text>
             <ion-text color="white">{{ exo.bestSet.reps }} reps &bull; {{ exo.bestSet.weight }} kg</ion-text>
-          </ion-card-content>
-        </ion-card>
-      }
-      <ion-textarea
-        placeholder="Notes..."
-        autoGrow="true"
-        fill="outline"
-        [(ngModel)]="exo.notes"
-        class="ion-padding-bottom"
-      ></ion-textarea>
+          </div>
+        } @else {
+          <ion-text>Add notes</ion-text>
+        }
+      </ion-button>
+
+      <ion-popover
+        trigger="open-notes"
+        triggerAction="click"
+        side="bottom"
+        alignment="center"
+        size="cover"
+        style="--offset-y: 10px"
+      >
+        <ng-template>
+          <ion-textarea
+            placeholder="Add notes about this exercise..."
+            autoGrow="true"
+            fill="outline"
+            [(ngModel)]="exo.notes"
+            class="ion-padding-bottom"
+          ></ion-textarea>
+        </ng-template>
+      </ion-popover>
+
       @for (set of exo.sets; track $index) {
         <exercise-set [hasHeader]="$index == 0" [set]="exo.sets[$index]" class="ion-margin-vertical"></exercise-set>
         @if ($index === currentSetIndex() && !exo.completed()) {

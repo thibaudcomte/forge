@@ -3,12 +3,15 @@ import { FormsModule } from '@angular/forms';
 import { Haptics } from '@capacitor/haptics';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import {
+  IonButton,
   IonCard,
   IonCardContent,
   IonCardHeader,
   IonCardSubtitle,
   IonCardTitle,
+  IonContent,
   IonIcon,
+  IonPopover,
   IonText,
   IonTextarea,
 } from '@ionic/angular/standalone';
@@ -21,6 +24,8 @@ import { ExerciseSetComponent } from './set/exercise-set';
 @Component({
   selector: 'exercise',
   imports: [
+    IonContent,
+    IonButton,
     FormsModule,
     IonCard,
     IonCardHeader,
@@ -32,6 +37,7 @@ import { ExerciseSetComponent } from './set/exercise-set';
     IonText,
     IonTextarea,
     RestButton,
+    IonPopover,
   ],
   templateUrl: './exercise.html',
 })
@@ -73,8 +79,8 @@ export class ExerciseComponent {
 
     if (event === 'stop') {
       await Haptics.vibrate({ duration: 1_000 });
-      this.currentSetIndex.update((idx) => Math.min(this.exercise().sets.length - 1, idx + 1));
-      if (this.currentSetIndex() === this.exercise().sets.length - 1) {
+      this.currentSetIndex.update((idx) => idx + 1);
+      if (this.currentSetIndex() === this.exercise().sets.length) {
         this.exercise().completed.set(true);
       }
     }

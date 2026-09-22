@@ -9,25 +9,12 @@
     @if (hasHeader()) {
       <div>Reps</div>
     }
-    <ion-input
-      type="number"
-      fill="outline"
-      [disabled]="disabled()"
-      [value]="set().reps"
-      (ionInput)="onRepsInput($event)"
-    >
-    </ion-input>
+    <ion-input type="number" fill="outline" [placeholder]="set().reps" (ionInput)="onRepsInput($event)"> </ion-input>
   </div>
   <div class="column">
     @if (hasHeader()) {
       <div>Weight (kg)</div>
     }
-    <ion-input
-      type="number"
-      fill="outline"
-      [disabled]="disabled()"
-      [value]="set().weight"
-      (ionInput)="onWeightInput($event)"
-    ></ion-input>
+    <ion-input type="number" fill="outline" [placeholder]="set().weight" (ionInput)="onWeightInput($event)"></ion-input>
   </div>
 </div>
