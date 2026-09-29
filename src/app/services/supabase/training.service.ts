@@ -8,7 +8,6 @@ export interface ProgramLight {
   description: string;
   exercisesCount: number;
   lastPerformedAt: Date | null;
-  //nextScheduledDate: Date;
 }
 
 export interface Workout {
@@ -26,8 +25,10 @@ export interface WorkoutExercise {
   name: string;
   repsRange: string;
   sets: {
-    reps: number;
-    weight: number;
+    lastReps?: number;
+    reps?: number;
+    lastWeight?: number;
+    weight?: number;
   }[];
   bestSet: {
     reps: number;
@@ -129,15 +130,24 @@ export class TrainingService {
             .filter((set) => set.reps !== null && set.weight !== null)
             .reduce<{ reps: number; weight: number } | null>((best, set) => {
               const candidate = { reps: set.reps!, weight: set.weight! };
-              return !best || candidate.reps * candidate.weight > best.reps * best.weight ? candidate : best;
+              return !best || candidate.reps * (candidate.weight ?? 0) > (best.reps ?? 0) * (best.weight ?? 0)
+                ? candidate
+                : best;
             }, null);
           const sets = workoutExercise?.exercise_sets.length
             ? workoutExercise.exercise_sets
                 .sort((a, b) => a.set_index - b.set_index)
-                .map((set) => ({ reps: set.reps ?? 0, weight: set.weight ?? 0 }))
+                .map((set) => ({
+                  lastReps: set.reps ?? undefined,
+                  reps: set.reps ?? undefined,
+                  lastWeight: set.weight ?? undefined,
+                  weight: set.weight ?? undefined,
+                }))
             : Array.from({ length: programExercise.sets_count }, () => ({
-                reps: 0,
-                weight: 0,
+                lastReps: undefined,
+                lastWeight: undefined,
+                reps: undefined,
+                weight: undefined,
               }));
 
           return {

@@ -18,13 +18,14 @@ export interface WorkoutExercise {
   } | null;
   restTimeSeconds: number;
   notes?: string;
-  completed: WritableSignal<boolean>;
 }
 
 export interface WorkoutExerciseSet {
   position: number;
-  reps: number;
-  weight: number;
+  lastReps?: number;
+  lastWeight?: number;
+  reps: WritableSignal<number>;
+  weight: WritableSignal<number>;
 }
 
 @Service()
@@ -47,14 +48,15 @@ export class LogState {
               repsRange: e.repsRange,
               restTimeSeconds: e.restTimeSeconds,
               notes: e.notes,
-              completed: signal(false),
               bestSet: e.bestSet,
               sets: e.sets.map(
                 (s, i) =>
                   ({
                     position: i,
-                    reps: s.reps,
-                    weight: s.weight,
+                    lastReps: s.lastReps,
+                    lastWeight: s.lastWeight,
+                    reps: signal(0),
+                    weight: signal(0),
                   }) as WorkoutExerciseSet,
               ),
             }) as WorkoutExercise,

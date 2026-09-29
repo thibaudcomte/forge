@@ -47,7 +47,8 @@ export class ExerciseComponent {
   constructor() {
     addIcons({ timeOutline, stopwatchOutline });
     effect(() => {
-      this.exercise();
+      const exercise = this.exercise();
+      console.log('Exercise state changed:', exercise);
       this.currentSetIndex.set(0);
     });
   }
@@ -56,7 +57,7 @@ export class ExerciseComponent {
 
   canStartRestTimer() {
     const set = this.exercise().sets.at(this.currentSetIndex());
-    return set?.reps && set?.reps > 0 && set?.weight && set?.weight > 0;
+    return set?.reps() && set?.reps() > 0 && set?.weight() && set?.weight() > 0;
   }
 
   async onTimerChanged(event: 'start' | 'stop') {
@@ -80,9 +81,6 @@ export class ExerciseComponent {
     if (event === 'stop') {
       await Haptics.vibrate({ duration: 1_000 });
       this.currentSetIndex.update((idx) => idx + 1);
-      if (this.currentSetIndex() === this.exercise().sets.length) {
-        this.exercise().completed.set(true);
-      }
     }
   }
 }

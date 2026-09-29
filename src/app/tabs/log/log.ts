@@ -67,7 +67,8 @@ export class LogPage {
   readonly completedExerciseIds = signal<ReadonlySet<number>>(new Set());
   readonly currentExercise = computed(() => {
     const exercises = this.state.workout()?.exercises ?? [];
-    return exercises.find((exercise) => exercise.id === this.currentExerciseId()) ?? exercises?.[0];
+    const exercise = exercises.find((exercise) => exercise.id === this.currentExerciseId()) ?? exercises?.[0];
+    return exercise;
   });
   readonly hasRemainingExercise = computed(() =>
     this.state.workout()?.exercises.some((exercise) => !this.completedExerciseIds().has(exercise.id)),
@@ -75,10 +76,15 @@ export class LogPage {
 
   @ViewChild(IonContent, { static: true }) content!: IonContent;
 
-  isCurrentExerciseComplete() {
+  readonly isCurrentExerciseComplete = computed(() => {
     const exercise = this.currentExercise();
-    return exercise?.completed() ?? false;
-  }
+    const isComplete = exercise?.sets.every((set) => {
+      const reps = set.reps();
+      const weight = set.weight();
+      return reps > 0 && weight > 0;
+    });
+    return isComplete;
+  });
 
   nextExercise() {
     if (!this.hasRemainingExercise() || !this.isCurrentExerciseComplete()) return;
@@ -130,7 +136,16 @@ export class LogPage {
     const workout = this.state.workout();
     if (!workout?.programId) return;
 
-    await this.supabase.saveWorkout(workout.programId, workout.exercises);
+    const exercises = workout.exercises.map((exercise) => ({
+      id: exercise.id,
+      sets: exercise.sets.map((set) => ({
+        position: set.position,
+        reps: set.reps(),
+        weight: set.weight(),
+      })),
+      notes: exercise.notes,
+    }));
+    await this.supabase.saveWorkout(workout.programId, exercises);
     this.state.endWorkout();
 
     const toast = await this.toastController.create({
